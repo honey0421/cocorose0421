@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡VAMOS! 실전 스페인 여행 가이드 v3.0 Premium</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Noto Sans KR -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        }
+        /* Custom smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1faee;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e63946;
+            border-radius: 10px;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- -->
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-red-600 via-amber-500 to-red-600 text-white py-8 px-4 shadow-md text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/10 pointer-events-none"></div>
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <span class="inline-block bg-white/20 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-2">v3.0 Premium Master Edition</span>
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-sm flex items-center justify-center gap-2">
+                🇪🇸 ¡VAMOS! 스페인 여행 가이드
+            </h1>
+            <p class="text-sm md:text-lg text-amber-50 font-medium mt-2">
+                필수 단어 100선 & 상황별 회화 150선 완벽 리뉴얼 (고품질 원어민 음성 매칭 엔진)
+            </p>
+        </div>
+    </header>
+
+    <!-- Control Panel (Search & Speech Settings) -->
+    <div class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm py-3 px-4">
+        <div class="max-w-4xl mx-auto flex flex-col gap-3">
+            <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+                <!-- Search bar -->
+                <div class="relative w-full md:w-80">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </span>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="전체 검색 (예: 와이파이, 고수, 열쇠, 표)" 
+                        class="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-100 border border-transparent rounded-xl focus:outline-none focus:bg-white focus:border-red-500 transition-all font-medium">
+                </div>
+
+                <!-- Global Speech Settings & Speed -->
+                <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600 w-full md:w-auto justify-end">
+                    <div class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                        정밀 학습 속도:
+                    </div>
+                    <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200">
+                        <button id="speed-slow" onclick="setSpeed(0.7)" class="px-3 py-1 rounded-md transition-all text-slate-500">🐌 느리게 (0.7x)</button>
+                        <button id="speed-normal" onclick="setSpeed(1.0)" class="px-3 py-1 rounded-md bg-white text-red-600 shadow-sm transition-all">👤 보통 (1.0x)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- -->
+            <!-- Real-time Voice Diagnostics Bar -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div class="flex flex-col gap-1">
+                    <span class="text-slate-500 font-medium">🗣️ 내 디바이스 음성 지원 상태</span>
+                    <div id="voiceStatus" class="font-bold flex items-center gap-1">진단 중...</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-500 font-medium whitespace-nowrap">추천 성우 선택:</span>
+                    <select id="voiceSelect" onchange="changeVoice()" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-700 font-medium focus:outline-none focus:border-red-500 max-w-xs truncate">
+                        <option>기기 내 목소리를 분석 중입니다...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Main Tabs -->
+    <nav class="bg-slate-950 text-slate-300 shadow-inner">
+        <div class="max-w-4xl mx-auto flex overflow-x-auto scrollbar-none">
+            <button onclick="showSection('home')" id="tab-home" class="tab-btn flex-1 py-4 px-4 text-center font-bold border-b-4 border-red-500 text-white whitespace-nowrap transition-all duration-200 flex items-center justify-center gap-2">
+                🏠 홈 & 설치 가이드
+            </button>
+            <button onclick="showSection('words')" id="tab-words" class="tab-btn flex-1 py-4 px-4 text-center font-bold border-b-4 border-transparent hover:text-white whitespace-nowrap transition-all duration-200 flex items-center justify-center gap-2">
+                📚 필수 단어 (100선)
+            </button>
+            <button onclick="showSection('situations')" id="tab-situations" class="tab-btn flex-1 py-4 px-4 text-center font-bold border-b-4 border-transparent hover:text-white whitespace-nowrap transition-all duration-200 flex items-center justify-center gap-2">
+                ✈️ 상황별 회화 (150선)
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="container max-w-4xl mx-auto px-4 py-6 flex-grow">
+        
+        <!-- -->
+        <!-- 1. HOME SECTION -->
+        <section id="home" class="tab-content block animate-fade-in space-y-6">
+            <!-- Essential expression cards -->
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
+                <h2 class="text-xl font-bold text-slate-950 mb-4 flex items-center gap-2 border-b-2 border-red-500 pb-2">
+                    <span class="text-lg">📢</span> 가장 기본이 되는 최고 핵심 표현
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gradient-to-br from-red-50 to-white border-l-4 border-red-500 p-4 rounded-r-xl flex items-center justify-between hover:shadow-sm transition-all duration-200">
+                        <div>
+                            <span class="text-red-600 font-extrabold text-lg block">Hola / Gracias</span>
+                            <span class="text-slate-500 text-xs font-semibold block mb-1">올라 / 그라시아스</span>
+                            <span class="text-slate-700 text-sm font-semibold">안녕하세요 / 감사합니다</span>
+                        </div>
+                        <button onclick="speak('Hola / Gracias')" class="p-3 bg-red-100 hover:bg-red-200 text-red-700 rounded-full transition-colors" title="발음 듣기">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                        </button>
+                    </div>
+                    <div class="bg-gradient-to-br from-amber-50 to-white border-l-4 border-amber-500 p-4 rounded-r-xl flex items-center justify-between hover:shadow-sm transition-all duration-200">
+                        <div>
+                            <span class="text-amber-700 font-extrabold text-lg block">Por favor</span>
+                            <span class="text-slate-500 text-xs font-semibold block mb-1">뽀르 빠보르</span>
+                            <span class="text-slate-700 text-sm font-semibold">부탁합니다 (음식 주문, 요구 시 항상 결합)</span>
+                        </div>
+                        <button onclick="speak('Por favor')" class="p-3 bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-full transition-colors" title="발음 듣기">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Native Voice Engine Instruction Guide -->
+            <div id="voice-install-guide" class="bg-amber-50/80 border border-amber-200 rounded-2xl p-6 hidden">
+                <div class="flex gap-3">
+                    <span class="text-2xl shrink-0">💡</span>
+                    <div class="space-y-2">
+                        <h3 class="text-base font-bold text-amber-900">현지 발음(스페인어)이 어색하거나 들리지 않으시나요?</h3>
+                        <p class="text-xs text-amber-800 leading-relaxed">
+                            기기에 스페인어(Español) 원어민 언어팩이 없으면 한글 억양이 가미된 엉터리 기계 발음이 납니다. 아래 설정을 조절하면 1분 안에 완전 무료로 맑고 유창한 원어민 음성을 즉시 청취하실 수 있습니다.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs">
+                            <div class="bg-white/80 p-3 rounded-lg border border-amber-200">
+                                <span class="font-bold text-slate-900 block mb-1 font-semibold">📱 Android (삼성 갤럭시 등)</span>
+                                <p class="text-slate-600 leading-normal">설정 ➡️ 일반 ➡️ 글자 읽어주기 (TTS) ➡️ 기본 엔진 옆 톱니바퀴 클릭 ➡️ 음성 데이터 설치 ➡️ <b>'스페인어'</b> 다운로드</p>
+                            </div>
+                            <div class="bg-white/80 p-3 rounded-lg border border-amber-200">
+                                <span class="font-bold text-slate-900 block mb-1 font-semibold">🍎 iOS (아이폰 / 아이패드)</span>
+                                <p class="text-slate-600 leading-normal">설정 ➡️ 손쉬운 사용 ➡️ 콘텐츠 말하기 ➡️ 음성 ➡️ 스페인어 ➡️ <b>Monica</b> 또는 <b>Jorge (고음질)</b> 목소리 다운로드 및 선택</p>
+                            </div>
+                            <div class="bg-white/80 p-3 rounded-lg border border-amber-200">
+                                <span class="font-bold text-slate-900 block mb-1 font-semibold">💻 Windows (10/11)</span>
+                                <p class="text-slate-600 leading-normal">설정 ➡️ 시간 및 언어 ➡️ 언어 및 지역 ➡️ 기본 설정 언어 추가 ➡️ <b>'스페인어(스페인)'</b> 및 음성 팩 다운로드</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etiquette and Info Cards -->
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
+                <h2 class="text-xl font-bold text-slate-950 mb-4 flex items-center gap-2 border-b-2 border-slate-800 pb-2">
+                    <span class="text-lg">💡</span> 스페인 여행 에티켓 & 안전 핵심 정리
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="text-lg">⏰</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">독특한 식사 시간</h4>
+                                <p class="text-slate-600 mt-0.5">스페인은 점심이 오후 14~16시, 저녁이 21~23시로 매우 늦습니다. 일반 한인 식당이나 관광 목적지가 아니라면 브레이크 타임을 면밀히 확인하세요.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="text-lg">💤</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">시에스타 (낮잠)</h4>
+                                <p class="text-slate-600 mt-0.5">대도시 대형 매장은 문제없으나, 소도시나 동네 상점들은 보통 14시부터 17시까지 문을 잠시 닫습니다. 낮 시간 쇼핑에 주의하세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="text-lg">🪙</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">레스토랑 팁 문화</h4>
+                                <p class="text-slate-600 mt-0.5">스페인에서는 팁이 의무가 아닙니다. 보통 세금과 서비스료가 포함되어 있어, 서비스에 매우 만족한 경우 잔돈(3~5% 이내)만 가볍게 두고 나오면 충분합니다.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="text-lg">🚨</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900">소매치기 예방 철칙</h4>
+                                <p class="text-slate-600 mt-0.5">휴대폰은 절대 테이블이나 노천카페 의자에 올려두지 마시고 손에 스트랩을 감아 쥐고 다녀야 합니다. 가방은 항상 몸 앞으로 위치시키세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- -->
+        <!-- 2. WORDS SECTION -->
+        <section id="words" class="tab-content hidden animate-fade-in">
+            <div class="flex flex-wrap gap-2 mb-6" id="vocab-sub-tabs">
+                <button onclick="filterVocab('all')" id="vtab-all" class="v-tab active bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-full transition-all">전체보기 (100선)</button>
+                <button onclick="filterVocab('places')" id="vtab-places" class="v-tab bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold px-3 py-2 rounded-full transition-all">📍 장소 & 위치</button>
+                <button onclick="filterVocab('transport')" id="vtab-transport" class="v-tab bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold px-3 py-2 rounded-full transition-all">🚗 교통 & 여행</button>
+                <button onclick="filterVocab('food')" id="vtab-food" class="v-tab bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold px-3 py-2 rounded-full transition-all">🍴 식재료 & 음식</button>
+                <button onclick="filterVocab('numbers')" id="vtab-numbers" class="v-tab bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold px-3 py-2 rounded-full transition-all">🔢 숫자 & 시간</button>
+                <button onclick="filterVocab('emergency')" id="vtab-emergency" class="v-tab bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold px-3 py-2 rounded-full transition-all">🚨 비상 & 일상</button>
+            </div>
+
+            <div id="vocab-display" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- Loaded dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- -->
+        <!-- 3. SITUATIONS SECTION -->
+        <section id="situations" class="tab-content hidden animate-fade-in">
+            <div class="flex flex-wrap gap-1.5 border-b border-slate-200 pb-3 mb-6 overflow-x-auto scrollbar-none">
+                <button onclick="filterSituation('airport')" id="stab-airport" class="s-tab bg-red-50 text-red-700 border border-red-200 text-xs md:text-sm font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all shadow-sm">
+                    ✈️ 공항/기내
+                </button>
+                <button onclick="filterSituation('restaurant')" id="stab-restaurant" class="s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200">
+                    🍴 식당에서
+                </button>
+                <button onclick="filterSituation('shopping')" id="stab-shopping" class="s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200">
+                    🛒 쇼핑/시장
+                </button>
+                <button onclick="filterSituation('directions')" id="stab-directions" class="s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200">
+                    🗺️ 교통/길찾기
+                </button>
+                <button onclick="filterSituation('pharmacy')" id="stab-pharmacy" class="s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200">
+                    💊 약국에서
+                </button>
+                <button onclick="filterSituation('hotel')" id="stab-hotel" class="s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200">
+                    🏨 호텔/숙소
+                </button>
+                <button onclick="filterSituation('tourism')" id="stab-tourism" class="s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200">
+                    🏛️ 박물관/관광지
+                </button>
+                <button onclick="filterSituation('smalltalk')" id="stab-smalltalk" class="s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200">
+                    💬 스몰토크
+                </button>
+            </div>
+
+            <div id="situations-display" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Loaded dynamically by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-8 text-center text-xs text-slate-500 mt-auto px-4 leading-relaxed">
+        <p class="font-semibold text-slate-400">© 2026 ¡VAMOS! 스페인 여행 가이드 - 오프라인 완벽 하이브리드 설계</p>
+        <p class="mt-1.5">본 가이드북은 Web Speech Synthesis API를 활용하여 디바이스에 연결된 고음질 로컬 스페인어 원어민 성우 보이스를 호출합니다.</p>
+    </footer>
+
+    <!-- Universal Alert Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-4 py-3 rounded-full shadow-lg opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 z-50">
+        <span id="toast-icon">ℹ️</span>
+        <span id="toast-text">발음 재생 완료</span>
+    </div>
+
+    <!-- Script Execution -->
+    <script>
+        //        // 100 Core Words Database (20 words * 5 categories = 100 items)
+        const vocabulary = {
+            places: [
+                { sp: "Museo", pr: "무세요", kr: "박물관" },
+                { sp: "Playa", pr: "쁠라이야", kr: "해변" },
+                { sp: "Parque", pr: "빠르께", kr: "공원" },
+                { sp: "Mercado", pr: "메르까도", kr: "시장" },
+                { sp: "Castillo", pr: "까스띠요", kr: "성 (Castle)" },
+                { sp: "Templo", pr: "땜쁠로", kr: "사원" },
+                { sp: "Farmacia", pr: "빠르마시아", kr: "약국" },
+                { sp: "Baño", pr: "바뇨", kr: "화장실" },
+                { sp: "Aeropuerto", pr: "아에로뿌에르또", kr: "공항" },
+                { sp: "Estación", pr: "에스따시온", kr: "역 / 터미널" },
+                { sp: "Hotel", pr: "오뗄", kr: "호텔" },
+                { sp: "Restaurante", pr: "레스따우란떼", kr: "레스토랑" },
+                { sp: "Cafetería", pr: "까페떼리아", kr: "카페" },
+                { sp: "Supermercado", pr: "수뻬르메르까도", kr: "대형 마트" },
+                { sp: "Tienda", pr: "띠엔다", kr: "가게 / 상점" },
+                { sp: "Hospital", pr: "오스삐딸", kr: "병원" },
+                { sp: "Centro", pr: "쎈뜨로", kr: "도심 / 시내" },
+                { sp: "Banco", pr: "반꼬", kr: "은행" },
+                { sp: "Plaza", pr: "쁠라사", kr: "광장" },
+                { sp: "Entrada", pr: "엔뜨라다", kr: "입구 / 입장권" }
+            ],
+            transport: [
+                { sp: "Avión", pr: "아비온", kr: "비행기" },
+                { sp: "Autobús", pr: "아우또부스", kr: "버스" },
+                { sp: "Metro", pr: "메뜨로", kr: "지하철" },
+                { sp: "Tren", pr: "뜨렌", kr: "기차" },
+                { sp: "Taxi", pr: "딱시", kr: "택시" },
+                { sp: "Bicicleta", pr: "비시끌레따", kr: "자전거" },
+                { sp: "Billete", pr: "비예떼", kr: "표 / 티켓" },
+                { sp: "Salida", pr: "살리다", kr: "출구 / 출발" },
+                { sp: "Llegada", pr: "예가다", kr: "입구 / 도착" },
+                { sp: "Mapa", pr: "마빠", kr: "지도" },
+                { sp: "Maleta", pr: "말레따", kr: "여행용 가방" },
+                { sp: "Pasaporte", pr: "빠사뽀르떼", kr: "여권" },
+                { sp: "Vuelo", pr: "부엘로", kr: "비행편 / 비행" },
+                { sp: "Equipaje", pr: "에끼빠헤", kr: "수하물 / 짐" },
+                { sp: "Asiento", pr: "아씨엔또", kr: "좌석 / 자리" },
+                { sp: "Destino", pr: "데스띠노", kr: "목적지" },
+                { sp: "Dirección", pr: "디렉씨온", kr: "주소" },
+                { sp: "Coche", pr: "꼬체", kr: "자동차 / 차량" },
+                { sp: "Conductor", pr: "꼰둑또르", kr: "기사 / 운전자" },
+                { sp: "Horario", pr: "오라리오", kr: "시간표 / 일정" }
+            ],
+            food: [
+                { sp: "Pollo", pr: "뽀요", kr: "닭고기" },
+                { sp: "Pescado", pr: "뻬스까도", kr: "생선" },
+                { sp: "Mariscos", pr: "마리스꼬스", kr: "해산물" },
+                { sp: "Carne", pr: "까르네", kr: "고기 / 육류" },
+                { sp: "Ternera", pr: "떼르네라", kr: "소고기" },
+                { sp: "Cerdo", pr: "세르도", kr: "돼지고기" },
+                { sp: "Agua", pr: "아구아", kr: "물" },
+                { sp: "Cerveza", pr: "세르베사", kr: "맥주" },
+                { sp: "Vino", pr: "비노", kr: "와인" },
+                { sp: "Café", pr: "까페", kr: "커피" },
+                { sp: "Menú", pr: "메누", kr: "메뉴판" },
+                { sp: "Cuenta", pr: "꾸엔따", kr: "계산서" },
+                { sp: "Sal", pr: "살", kr: "소금" },
+                { sp: "Azúcar", pr: "아수까르", kr: "설탕" },
+                { sp: "Pan", pr: "빵", kr: "빵" },
+                { sp: "Hielo", pr: "이에로", kr: "얼음" },
+                { sp: "Leche", pr: "레체", kr: "우유" },
+                { sp: "Queso", pr: "께소", kr: "치즈" },
+                { sp: "Arroz", pr: "아로스", kr: "쌀 / 밥" },
+                { sp: "Fruta", pr: "프루따", kr: "과일" }
+            ],
+            numbers: [
+                { sp: "Uno", pr: "우노", kr: "1 (일)" },
+                { sp: "Dos", pr: "또스", kr: "2 (이)" },
+                { sp: "Tres", pr: "뜨레스", kr: "3 (삼)" },
+                { sp: "Cuatro", pr: "꾸아뜨로", kr: "4 (사)" },
+                { sp: "Cinco", pr: "씽꼬", kr: "5 (오)" },
+                { sp: "Seis", pr: "세이스", kr: "6 (육)" },
+                { sp: "Siete", pr: "시에떼", kr: "7 (칠)" },
+                { sp: "Ocho", pr: "오초", kr: "8 (팔)" },
+                { sp: "Nueve", pr: "누에베", kr: "9 (구)" },
+                { sp: "Diez", pr: "디에스", kr: "10 (십)" },
+                { sp: "Hoy", pr: "오이", kr: "오늘" },
+                { sp: "Mañana", pr: "마냐나", kr: "내일 / 아침" },
+                { sp: "Ayer", pr: "아예르", kr: "어제" },
+                { sp: "Hora", pr: "오라", kr: "시 / 시간" },
+                { sp: "Minuto", pr: "미누또", kr: "분" },
+                { sp: "Lunes", pr: "루네스", kr: "월요일" },
+                { sp: "Viernes", pr: "비에르네스", kr: "금요일" },
+                { sp: "Sábado", pr: "싸바도", kr: "토요일" },
+                { sp: "Domingo", pr: "도민고", kr: "일요일" },
+                { sp: "Semana", pr: "세마나", kr: "주 / 일주일" }
+            ],
+            emergency: [
+                { sp: "Ayuda", pr: "아유다", kr: "도움 / 구조" },
+                { sp: "Policía", pr: "뽀리시아", kr: "경찰" },
+                { sp: "Médico", pr: "메디꼬", kr: "의사" },
+                { sp: "Amigo", pr: "아미고", kr: "친구" },
+                { sp: "Dinero", pr: "디네로", kr: "돈" },
+                { sp: "Tarjeta", pr: "따르헤따", kr: "신용카드" },
+                { sp: "Teléfono", pr: "뗄레포노", kr: "전화기" },
+                { sp: "Llave", pr: "야베", kr: "열쇠 / 키" },
+                { sp: "Nombre", pr: "놈브레", kr: "이름" },
+                { sp: "País", pr: "빠이스", kr: "국가 / 나라" },
+                { sp: "Sol", pr: "솔", kr: "태양 / 햇빛" },
+                { sp: "Lluvia", pr: "유비아", kr: "비" },
+                { sp: "Calor", pr: "까롤", kr: "더위" },
+                { sp: "Frío", pr: "프리오", kr: "추위" },
+                { sp: "Grande", pr: "그란데", kr: "큰" },
+                { sp: "Pequeño", pr: "뻬께뇨", kr: "작은" },
+                { sp: "Abierto", pr: "아비에르또", kr: "열린 / 영업 중" },
+                { sp: "Cerrado", pr: "쎄라도", kr: "닫힌 / 영업 종료" },
+                { sp: "Gratis", pr: "그라띠스", kr: "무료" },
+                { sp: "Precio", pr: "쁘레씨오", kr: "가격 / 금액" }
+            ]
+        };
+
+        //        // 150 Situational Phrases Database
+        const phrases = {
+            airport: [
+                { sp: "Tengo un vuelo.", pr: "땡고 운 부엘로", kr: "비행기 예약이 있어요." },
+                { sp: "Quisiera hacer el check-in.", pr: "끼시에라 아세르 엘 체킹", kr: "체크인을 하고 싶습니다." },
+                { sp: "Aquí está mi pasaporte.", pr: "아끼 에스따 미 빠사뽀르떼", kr: "여기 제 여권이 있습니다." },
+                { sp: "¿A qué hora sale el vuelo?", pr: "아 게 오라 살레 엘 부엘로?", kr: "비행기가 몇 시에 출발하나요?" },
+                { sp: "¿Dónde hago el check-in?", pr: "돈데 아고 엘 체킹?", kr: "체크인을 어디서 하나요?" },
+                { sp: "Solo equipaje de mano.", pr: "솔로 에끼빠헤 데 마노", kr: "기내 수하물만 있습니다." },
+                { sp: "Viajo por turismo.", pr: "비아호 뽀르 뚜리스모", kr: "관광 목적으로 왔습니다." },
+                { sp: "Me quedo cinco días.", pr: "메 게도 씽꼬 디아스", kr: "5일 동안 머눕니다." },
+                { sp: "Este es mi asiento.", pr: "에스떼 에스 미 아씨엔또", kr: "이곳이 제 자리입니다." },
+                { sp: "¿Puedo ir al baño?", pr: "뿌에도 이르 알 바뇨?", kr: "화장실에 가도 될까요?" },
+                { sp: "Mi maleta no llegó.", pr: "미 말레따 노 예고", kr: "제 가방이 도착하지 않았어요." },
+                { sp: "¿Dónde está la cinta de equipaje?", pr: "돈데 에스따 라 씬따 데 에끼빠헤?", kr: "수하물 수취대가 어디인가요?" },
+                { sp: "¿Puedo cambiar mi asiento?", pr: "뿌에도 까임비아르 미 아씨엔또?", kr: "자리를 바꿀 수 있을까요?" },
+                { sp: "¿Tienen una manta?", pr: "띠에넨 우나 만따?", kr: "담요가 있나요?" },
+                { sp: "Agua, por favor.", pr: "아구아 뽀르 빠보르", kr: "물 좀 주세요." },
+                { sp: "¿Cuánto equipaje puedo llevar?", pr: "꽌또 에끼빠헤 뿌에도 예바르?", kr: "위탁 수하물을 몇 개까지 보낼 수 있나요?" },
+                { sp: "Mi vuelo está retrasado.", pr: "미 부엘로 에스따 레뜨라사도", kr: "제 비행편이 지연되었습니다." },
+                { sp: "¿Dónde está la puerta de embarque?", pr: "돈데 에스따 라 뿌에르따 데 엠바르께?", kr: "탑승구가 어디인가요?" },
+                { sp: "¿Me da una tarjeta de desembarque?", pr: "메 다 우나 따르헤따 데 데셈바르께?", kr: "입국 신고서 한 장 주시겠어요?" },
+                { sp: "Quisiera un asiento de pasillo.", pr: "끼시에라 운 아씨엔또 데 빠씨요", kr: "통로 측 좌석으로 원합니다." }
+            ],
+            restaurant: [
+                { sp: "¿Tienen mesa?", pr: "띠에넨 메사?", kr: "자리 있나요?" },
+                { sp: "Una mesa para dos, por favor.", pr: "우나 메사 빠라 또스 뽀르 빠보르", kr: "두 명 자리 부탁합니다." },
+                { sp: "¡Oiga!", pr: "오이가!", kr: "저기요! (종업원을 부를 때)" },
+                { sp: "El menú, por favor.", pr: "엘 메누 뽀르 빠보르", kr: "메뉴판 좀 주세요." },
+                { sp: "¿Qué me recomienda?", pr: "게 메 레꼬미엔다?", kr: "무엇을 추천하시나요?" },
+                { sp: "Quiero esto.", pr: "끼에로 에스또", kr: "이걸로 주문할게요." },
+                { sp: "¿Tienen menú en inglés?", pr: "띠에넨 메누 엔 잉글레스?", kr: "영어 메뉴판이 있나요?" },
+                { sp: "Sin cilantro, por favor.", pr: "신 실란뜨로 뽀르 빠보르", kr: "고수 빼주세요." },
+                { sp: "No muy picante, por favor.", pr: "노 무이 삐깐떼 뽀르 빠보르", kr: "너무 맵지 않게 해주세요." },
+                { sp: "Agua sin hielo, por favor.", pr: "아구아 신 이에로 뽀르 빠보르", kr: "얼음 없는 물 주세요." },
+                { sp: "La cuenta, por favor.", pr: "라 꾸엔따 뽀르 빠보르", kr: "계산서 주세요." },
+                { sp: "Está delicioso.", pr: "에스따 델리시오소", kr: "정말 맛있어요." },
+                { sp: "Está muy rico.", pr: "에스따 무이 리꼬", kr: "정말 맛있어요. (풍미가 풍부한 맛)" },
+                { sp: "¿Está incluido?", pr: "에스따 잉끌루이도?", kr: "(팁/봉사료가) 포함되어 있나요?" },
+                { sp: "Quisiera pedir el postre.", pr: "끼시에라 뻬디르 엘 뽀스뜨레", kr: "디저트를 주문하고 싶어요." },
+                { sp: "¿Tienen platos vegetarianos?", pr: "띠에넨 쁠라또스 베헤따리아노스?", kr: "채식주의자용 음식이 있나요?" },
+                { sp: "¿Puedo pagar con tarjeta?", pr: "뿌에도 빠가르 꼰 따르헤따?", kr: "카드로 결제할 수 있나요?" },
+                { sp: "Para llevar, por favor.", pr: "빠라 예바르 뽀르 빠보르", kr: "포장해 주세요." },
+                { sp: "La comida está fría.", pr: "라 꼬미다 에스따 프리아", kr: "음식이 식었어요." },
+                { sp: "¿Dónde está el baño?", pr: "돈데 에스따 엘 바뇨?", kr: "화장실이 어디인가요?" }
+            ],
+            shopping: [
+                { sp: "¿Cuánto cuesta esto?", pr: "꽌또 꾸에스따 에스또?", kr: "이거 얼마예요?" },
+                { sp: "¿Tiene descuento?", pr: "띠에네 데스꾸엔또?", kr: "할인되나요?" },
+                { sp: "Está en oferta.", pr: "에스따 엔 오페르따", kr: "세일 중인가요?" },
+                { sp: "Solo estoy mirando.", pr: "솔로 에스또이 미란도", kr: "그냥 둘러보고 있어요." },
+                { sp: "¿Puedo probarlo?", pr: "뿌에도 쁘로바를로?", kr: "입어봐도 될까요?" },
+                { sp: "¿Tiene otro color?", pr: "띠에네 오또로 꼴로르?", kr: "다른 색상 있나요?" },
+                { sp: "¿Aceptan tarjeta?", pr: "아셉딴 따르헤따?", kr: "카드 결제 되나요?" },
+                { sp: "Me llevo este.", pr: "메 예보 에스떼", kr: "이걸로 살게요." },
+                { sp: "¿Puede bajar un poco el precio?", pr: "뿌에데 바하르 운 뽀꼬 엘 쁘레씨오?", kr: "가격을 조금 깎아주실 수 있나요?" },
+                { sp: "¿Tiene una talla más grande?", pr: "띠에네 우나 따야 마스 그란데?", kr: "더 큰 사이즈가 있나요?" },
+                { sp: "¿Tiene una talla más pequeña?", pr: "띠에네 우나 따야 마스 뻬께냐?", kr: "더 작은 사이즈가 있나요?" },
+                { sp: "Es muy caro.", pr: "에스 무이 까로", kr: "너무 비싸요." },
+                { sp: "Quiero un recibo, por favor.", pr: "끼에로 운 레씨보 뽀르 빠보르", kr: "영수증 좀 주세요." },
+                { sp: "¿Dónde pago?", pr: "돈데 빠고?", kr: "계산은 어디서 하나요?" },
+                { sp: "¿Se puede devolver?", pr: "세 뿌에도 데볼베르?", kr: "환불이 가능한가요?" },
+                { sp: "Busco un regalo.", pr: "부스꼬 운 레가lo", kr: "선물을 찾고 있어요." },
+                { sp: "Póngamelo en una bolsa, por favor.", pr: "뽄가멜로 엔 우나 볼사 뽀르 빠보르", kr: "봉투에 넣어 주세요." },
+                { sp: "Me gusta este diseño.", pr: "메 구스따 에스떼 디쎄뇨", kr: "이 디자인이 마음에 들어요." }
+            ],
+            directions: [
+                { sp: "¿Dónde está la estación?", pr: "돈데 에스따 라 에스따씨온?", kr: "역이 어디예요?" },
+                { sp: "¿Dónde está el centro?", pr: "돈데 에스따 엘 쎈뜨로?", kr: "시내가 어디예요?" },
+                { sp: "¿Dónde puedo comprar un billete?", pr: "돈데 뿌에도 꼼쁘라르 운 비예떼?", kr: "티켓을 어디서 살 수 있나요?" },
+                { sp: "Lléveme a esta dirección.", pr: "예베메 아 에스따 디렉씨온", kr: "이 주소로 데려다주세요." },
+                { sp: "¿A qué hora abre?", pr: "아 게 오라 아브레?", kr: "몇 시에 여나요?" },
+                { sp: "¿A qué hora cierra?", pr: "아 게 오라 씨에라?", kr: "몇 시에 닫나요?" },
+                { sp: "¿Cómo llego a este lugar?", pr: "꼬모 예고 아 에스떼 루가르?", kr: "이곳에 어떻게 가나요?" },
+                { sp: "¿Está lejos de aquí?", pr: "에스따 레호스 데 아끼?", kr: "여기서 먼가요?" },
+                { sp: "¿Puedo ir a pie?", pr: "뿌에도 이르 아 ぴ에?", kr: "걸어갈 수 있나요?" },
+                { sp: "¿Dónde se toma el autobús?", pr: "돈데 세 또마 엘 아우또부스?", kr: "버스는 어디서 타나요?" },
+                { sp: "Siga recto, por favor.", pr: "씨가 렉또 뽀르 빠보르", kr: "직진해 주세요." },
+                { sp: "Gire a la derecha.", pr: "히레 아 라 데레차", kr: "우회전하세요." },
+                { sp: "Gire a la izquierda.", pr: "히레 아 라 이스끼에르다", kr: "좌회전하세요." },
+                { sp: "¿Cuál es la próxima parada?", pr: "꽐 에스 라 쁘록씨마 빠라다?", kr: "다음 정거장은 어디인가요?" },
+                { sp: "Pare aquí, por favor.", pr: "빠레 아끼 뽀르 빠보르", kr: "여기서 세워주세요." },
+                { sp: "¿Este tren va a Madrid?", pr: "에스떼 뜨렌 바 아 마드رید?", kr: "이 기차는 마드리드로 가나요?" },
+                { sp: "Estoy perdido.", pr: "에스또이 뻬르디도", kr: "길을 잃었습니다. (남성 화자)" },
+                { sp: "Estoy perdida.", pr: "에스또이 뻬르디다", kr: "길을 잃었습니다. (여성 화자)" }
+            ],
+            pharmacy: [
+                { sp: "Necesito una farmacia.", pr: "네쎄씨또 우나 빠르마시아", kr: "약국이 필요해요." },
+                { sp: "Me duele la cabeza.", pr: "메 두엘레 라 까베사", kr: "머리가 아파요." },
+                { sp: "Me duele el estómago.", pr: "메 두엘레 엘 에스또마고", kr: "배가 아파요." },
+                { sp: "Tengo fiebre.", pr: "땡고 피에브레", kr: "열이 나요." },
+                { sp: "Tengo tos.", pr: "땡고 또스", kr: "기침이 나요." },
+                { sp: "¿Tiene pastillas para el dolor?", pr: "띠에네 빠스띠야스 빠라 엘 도롤?", kr: "진통제 있나요?" },
+                { sp: "Tengo un resfriado.", pr: "땡고 운 레스프리아도", kr: "감기에 걸렸어요." },
+                { sp: "Necesito tiritas.", pr: "네쎄씨또 띠리따스", kr: "대역밴드가 필요해요." },
+                { sp: "¿Tiene medicina para la digestión?", pr: "띠에네 메디씨나 빠라 라 디헤스띠온?", kr: "소화제 있나요?" },
+                { sp: "Me duele la garganta.", pr: "메 두엘레 라 가르간따", kr: "목이 아파요." },
+                { sp: "¿Cómo debo tomar esta medicina?", pr: "꼬모 데보 또마르 에스따 메디씨나?", kr: "이 약은 어떻게 먹어야 하나요?" },
+                { sp: "Tengo alergia.", pr: "땡고 알레르히아", kr: "알레르기가 있어요." },
+                { sp: "Me picó un insecto.", pr: "메 삐꼬 운 인섹또", kr: "벌레에 물렸어요." },
+                { sp: "¿Necesito receta para esto?", pr: "네쎄씨또 레쎄따 빠라 에스또?", kr: "이것은 처방전이 필요한가요?" },
+                { sp: "¿Tiene crema para quemaduras?", pr: "띠에네 끄레마 빠라 께마두라스?", kr: "화상 연고 있나요?" },
+                { sp: "Me siento mareado.", pr: "메 씨엔또 마레아도", kr: "어지러워요." },
+                { sp: "¿Tiene algo para la resaca?", pr: "띠에네 알고 빠라 라 레사까?", kr: "숙취 해소제 있나요?" },
+                { sp: "Un desinfectante, por favor.", pr: "운 데스인펙탄떼 뽀르 빠보르", kr: "소독약 좀 주세요." }
+            ],
+            hotel: [
+                { sp: "Tengo una reserva.", pr: "땡고 우나 레쎄르바", kr: "예약했습니다." },
+                { sp: "Quisiera hacer el check-in.", pr: "끼시에라 아세르 엘 체킹", kr: "체크인을 하고 싶습니다." },
+                { sp: "¿A qué hora es el desayuno?", pr: "아 게 오라 에스 엘 데사유노?", kr: "조식은 몇 시인가요?" },
+                { sp: "¿Tienen WiFi gratis?", pr: "띠에넨 와이파이 그라띠스?", kr: "무료 와이파이가 있나요?" },
+                { sp: "Cuál es la contraseña del WiFi?", pr: "꽐 에스 라 꼰뜨라세냐 델 와이파이?", kr: "와이파이 비밀번호가 무엇인가요?" },
+                { sp: "Mi llave no funciona.", pr: "미 야베 노 푼씨오나", kr: "방 열쇠(카드)가 작동하지 않아요." },
+                { sp: "No hay agua caliente.", pr: "노 아이 아구아 까리엔떼", kr: "뜨거운 물이 안 나와요." },
+                { sp: "Necesito más toallas, por favor.", pr: "네쎄씨또 마스 또아야스 뽀르 빠보르", kr: "수건이 더 필요합니다." },
+                { sp: "Quisiera hacer el check-out.", pr: "끼시에라 아세르 엘 체크아웃", kr: "체크아웃을 하고 싶습니다." },
+                { sp: "¿Puedo dejar mi equipaje aquí?", pr: "뿌에도 데하르 미 에끼빠헤 아끼?", kr: "여기에 짐을 임시 보관할 수 있을까요?" },
+                { sp: "¿A qué hora cierra la puerta principal?", pr: "아 게 오라 씨에라 라 뿌에르따 쁘린씨뽈?", kr: "정문은 몇 시에 닫나요?" },
+                { sp: "¿Tienen servicio de habitaciones?", pr: "띠에넨 세르비씨오 데 아비따씨오네스?", kr: "룸서비스가 되나요?" },
+                { sp: "El aire acondicionado no funciona.", pr: "엘 아이레 아꼰디씨오나도 노 푼씨오나", kr: "에컨(냉난방기)이 작동하지 않아요." },
+                { sp: "Por favor, limpie mi habitación.", pr: "뽀르 빠보르 림삐에 미 아비따씨온", kr: "방 청소를 부탁드립니다." },
+                { sp: "Despiérteme a las siete, por favor.", pr: "데스삐에르떼메 아 라스 시에떼 뽀르 빠보르", kr: "일곱 시에 모닝콜(깨워주기) 부탁합니다." },
+                { sp: "¿Dónde está el ascensor?", pr: "돈데 에스따 엘 아쎈쏘르?", kr: "엘리베이터가 어디 있나요?" },
+                { sp: "Quisiera cambiar de habitación.", pr: "끼시에라 까임비아르 데 아비따씨온", kr: "방을 바꾸고 싶습니다." },
+                { sp: "¿Hay una caja fuerte en la habitación?", pr: "아이 우나 까하 푸에르떼 엔 라 아비따씨온?", kr: "객실에 개인 금고가 있나요?" }
+            ],
+            tourism: [
+                { sp: "¿Dónde se compran las entradas?", pr: "돈데 세 꼼쁘란 라스 엔뜨라다스?", kr: "표(티켓)는 어디서 사나요?" },
+                { sp: "Dos entradas de adulto, por favor.", pr: "또스 엔뜨라다스 데 아둘또 뽀르 빠보르", kr: "성인 티켓 두 장 주세요." },
+                { sp: "¿Cuánto cuesta la entrada?", pr: "꽌또 꾸에스따 라 엔뜨라다?", kr: "입장료가 얼마인가요?" },
+                { sp: "¿Tienen descuento para estudiantes?", pr: "띠에넨 데스꾸엔또 빠라 에스뚜디안떼스?", kr: "학생 할인이 되나요?" },
+                { sp: "¿Se permiten fotos?", pr: "세 뻬르미뗀 포또스?", kr: "사진 촬영이 가능한가요?" },
+                { sp: "¿A qué hora cierra el museo?", pr: "아 게 오라 씨에라 엘 무세요?", kr: "박물관은 몇 시에 닫나요?" },
+                { sp: "Quisiera una audioguía en coreano.", pr: "끼시에라 우나 아우디오기아 엔 꼬레아노", kr: "한국어 오디오 가이드가 있나요?" },
+                { sp: "¿Dónde empieza la visita?", pr: "돈데 엠삐에사 라 비시따?", kr: "관람은 어디서 시작하나요?" },
+                { sp: "¿Hay una tienda de regalos?", pr: "아이 우나 띠엔다 데 레갈로스?", kr: "기념품점이 있나요?" },
+                { sp: "¿Es gratis hoy?", pr: "에스 그라띠스 오이?", kr: "오늘 무료 입장인가요?" },
+                { sp: "Este lugar es maravilloso.", pr: "에스떼 루가르 에스 마라비요소", kr: "이곳은 정말 멋지네요(아름답네요)." },
+                { sp: "¿Qué es este monumento?", pr: "게 에스 에스떼 모누멘또?", kr: "이 기념비(조형물)는 무엇인가요?" },
+                { sp: "¿Puedo entrar aquí?", pr: "뿌에도 엔뜨라르 아끼?", kr: "여기에 들어가도 되나요?" },
+                { sp: "¿Hay visitas guiadas?", pr: "아이 비시따스 기아다스?", kr: "가이드 투어가 있나요?" },
+                { sp: "¿Cuánto dura el recorrido?", pr: "꽌또 두라 엘 레꼬리도?", kr: "관람 시간(코스 도는 시간)이 얼마나 걸리나요?" },
+                { sp: "¿Dónde está la salida de emergencia?", pr: "돈데 에스따 라 살리다 데 에메르헨시아?", kr: "비상구는 어디인가요?" },
+                { sp: "¿Hay un folleto informativo?", pr: "아이 운 포예또 인포르마띠보?", kr: "안내 브로셔가 있나요?" },
+                { sp: "Me gustaría ver la exposición principal.", pr: "메 구斯따리아 베르 라 에스뽀시씨온 쁘린씨뽈", kr: "주요 전시를 보고 싶습니다." }
+            ],
+            smalltalk: [
+                { sp: "¡Hola! ¿Cómo estás?", pr: "올라 꼬모 에스따스", kr: "안녕하세요! 어떻게 지내세요?" },
+                { sp: "¡Mucho gusto!", pr: "무초 구스또", kr: "만나서 반가워요!" },
+                { sp: "¿De dónde eres?", pr: "데 돈데 에레스?", kr: "어디서 오셨어요?" },
+                { sp: "Soy de Corea del Sur.", pr: "쏘이 데 꼬레아 델 술", kr: "한국(남한)에서 왔습니다." },
+                { sp: "Me llamo...", pr: "메 야모", kr: "제 이름은... 입니다." },
+                { sp: "¿Cómo te llamas?", pr: "꼬모 떼 야마스?", kr: "이름이 어떻게 되세요?" },
+                { sp: "Hablo un poco de español.", pr: "아블로 운 뽀꼬 데 에스빠뇰", kr: "스페인어 조금 할 줄 알아요." },
+                { sp: "Me gusta mucho España.", pr: "메 구스따 무초 에스빠냐", kr: "스페인을 아주 좋아합니다." },
+                { sp: "Hace muy buen tiempo hoy.", pr: "아세 무이 부엔 띠엠뽀 오이", kr: "오늘 날씨가 아주 좋네요." },
+                { sp: "Hace mucho calor.", pr: "아세 무초 까롤", kr: "매우 덥네요." },
+                { sp: "Hace mucho frío.", pr: "아세 무초 프리오", kr: "매우 춥네요." },
+                { sp: "¡Qué hermoso día!", pr: "게 에르모소 디아", kr: "정말 아름다운 날이네요!" },
+                { sp: "¿Te gusta la comida coreana?", pr: "떼 구스따 라 꼬미다 꼬레아나?", kr: "한국 음식 좋아하세요?" },
+                { sp: "Es mi primer viaje aquí.", pr: "에스 미 쁘리메르 비아헤 아끼", kr: "여기는 첫 여행입니다." },
+                { sp: "El viaje es fantástico.", pr: "엘 비아헤 에스 팬따스띠꼬", kr: "여행이 환상적이에요." },
+                { sp: "Muchas gracias por su ayuda.", pr: "무차스 그라시아스 뽀르 수 아유다", kr: "도와주셔서 정말 감사합니다." },
+                { sp: "¡Que tenga un buen día!", pr: "게 뗑가 운 부엔 디아", kr: "좋은 하루 보내세요!" },
+                { sp: "¡Buen viaje!", pr: "부엔 비아헤", kr: "즐거운 여행 되세요!" },
+                { sp: "Adiós, ¡hasta luego!", pr: "아디오스 아스따 루에고", kr: "안녕히 계세요, 또 만나요!" },
+                { sp: "¡Buen provecho!", pr: "부엔 쁘로베초", kr: "맛있게 드세요! (식사 전 인사)" }
+            ]
+        };
+
+        //        // Speech synthesis global configurations
+        let speechRate = 1.0;
+        let voices = [];
+        let spanishVoice = null;
+        let activeSection = 'home';
+        let currentSituationTab = 'airport';
+        let currentVocabFilter = 'all';
+
+        // TTS Voice Selector & Diagnostics Engine
+        function populateVoiceList() {
+            if (!('speechSynthesis' in window)) {
+                const voiceStatus = document.getElementById('voiceStatus');
+                voiceStatus.innerHTML = `❌ 음성 지원이 안 되는 브라우저`;
+                voiceStatus.className = "text-rose-600 flex items-center gap-1";
+                return;
+            }
+
+            voices = window.speechSynthesis.getVoices();
+            const voiceSelect = document.getElementById('voiceSelect');
+            const voiceStatus = document.getElementById('voiceStatus');
+            const guide = document.getElementById('voice-install-guide');
+            
+            voiceSelect.innerHTML = '';
+
+            // Find all available Spanish voices
+            const esVoices = voices.filter(v => v.lang.toLowerCase().startsWith('es'));
+
+            if (esVoices.length > 0) {
+                // If native voices are found, hide the install tips guide
+                guide.classList.add('hidden');
+
+                esVoices.forEach((voice) => {
+                    const option = document.createElement('option');
+                    option.value = voice.name;
+                    option.textContent = `${voice.name} (${voice.lang === 'es-ES' ? '스페인 본토' : '중남미계'})`;
+                    
+                    // Prioritize es-ES (European Spanish) default selection
+                    if (voice.lang === 'es-ES' && !spanishVoice) {
+                        spanishVoice = voice;
+                        option.selected = true;
+                    }
+                    voiceSelect.appendChild(option);
+                });
+
+                if (!spanishVoice) {
+                    spanishVoice = esVoices[0];
+                }
+
+                voiceStatus.innerHTML = `🟢 원어민 목소리 활성화됨 (${spanishVoice.name})`;
+                voiceStatus.className = "text-emerald-600 flex items-center gap-1";
+            } else {
+                // No native Spanish voice found on current platform
+                guide.classList.remove('hidden');
+
+                const option = document.createElement('option');
+                option.textContent = "가용 원어민 성우 없음 (한국어로 대체됨)";
+                voiceSelect.appendChild(option);
+                voiceSelect.disabled = true;
+
+                voiceStatus.innerHTML = `🔴 원어민 음성 미지정 (한국어 억양이 강할 수 있습니다)`;
+                voiceStatus.className = "text-rose-500 flex items-center gap-1";
+            }
+        }
+
+        // Initialize voice change handler
+        function changeVoice() {
+            const select = document.getElementById('voiceSelect');
+            const selectedName = select.value;
+            spanishVoice = voices.find(v => v.name === selectedName);
+            const voiceStatus = document.getElementById('voiceStatus');
+            
+            if (spanishVoice) {
+                voiceStatus.innerHTML = `🟢 원어민 목소리 활성화됨 (${spanishVoice.name})`;
+                voiceStatus.className = "text-emerald-600 flex items-center gap-1";
+                showToast("🔊", `${spanishVoice.name} 성우로 변경되었습니다.`);
+            }
+        }
+
+        // Asynchronous triggers for Chrome & Firefox
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = populateVoiceList;
+            populateVoiceList();
+        }
+
+        // Speed setting handler
+        function setSpeed(rate) {
+            speechRate = rate;
+            document.getElementById('speed-slow').className = rate === 0.7 
+                ? "px-3 py-1 rounded-md bg-white text-red-600 shadow-sm transition-all" 
+                : "px-3 py-1 rounded-md transition-all text-slate-500";
+            document.getElementById('speed-normal').className = rate === 1.0 
+                ? "px-3 py-1 rounded-md bg-white text-red-600 shadow-sm transition-all" 
+                : "px-3 py-1 rounded-md transition-all text-slate-500";
+        }
+
+        // Speak actual text using chosen Voice
+        function speak(text) {
+            if (!('speechSynthesis' in window)) {
+                showToast("🔊", "이 브라우저/기기는 음성 합성 재생을 지원하지 않습니다.");
+                return;
+            }
+
+            window.speechSynthesis.cancel(); // Stop playing anything instantly
+
+            // Clean sentence structure for better parsing (Korean phonetics / emojis stripped)
+            const cleanText = text.replace(/[\?\!¿¡]/g, "").trim(); 
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            
+            utterance.lang = 'es-ES';
+            utterance.rate = speechRate;
+
+            // Direct match with the chosen speaker
+            if (spanishVoice) {
+                utterance.voice = spanishVoice;
+            }
+
+            utterance.onerror = (e) => {
+                showToast("⚠️", "발음 로딩에 실패했습니다. 다시 클릭해 주세요.");
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Custom Toast Helper
+        function showToast(icon, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-icon').textContent = icon;
+            document.getElementById('toast-text').textContent = message;
+            toast.classList.replace('opacity-0', 'opacity-100');
+            toast.classList.add('bottom-8');
+            setTimeout(() => {
+                toast.classList.replace('opacity-100', 'opacity-0');
+                toast.classList.remove('bottom-8');
+            }, 2500);
+        }
+
+        // Navigation Section Handler
+        function showSection(sectionId) {
+            activeSection = sectionId;
+            document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.replace('border-red-500', 'border-transparent');
+                btn.classList.replace('text-white', 'text-slate-300');
+            });
+
+            const activeBtn = document.getElementById('tab-' + sectionId);
+            activeBtn.classList.replace('border-transparent', 'border-red-500');
+            activeBtn.classList.add('text-white');
+
+            document.getElementById('searchInput').value = "";
+
+            if (sectionId === 'words') {
+                renderVocabularies();
+            } else if (sectionId === 'situations') {
+                renderSituations();
+            }
+        }
+
+        //        // Vocab Sub-filter
+        function filterVocab(category) {
+            currentVocabFilter = category;
+            document.querySelectorAll('.v-tab').forEach(b => {
+                b.className = "v-tab bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold px-3 py-2 rounded-full transition-all";
+            });
+            const activeBtn = document.getElementById('vtab-' + category);
+            activeBtn.className = "v-tab bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-full transition-all";
+
+            renderVocabularies();
+        }
+
+        // Render Vocab function (100 items master list)
+        function renderVocabularies(searchTerm = "") {
+            const container = document.getElementById('vocab-display');
+            container.innerHTML = "";
+
+            let itemsToRender = [];
+            
+            if (currentVocabFilter === 'all') {
+                for (let cat in vocabulary) {
+                    itemsToRender = itemsToRender.concat(vocabulary[cat]);
+                }
+            } else {
+                itemsToRender = vocabulary[currentVocabFilter] || [];
+            }
+
+            if (searchTerm) {
+                itemsToRender = itemsToRender.filter(item => 
+                    item.sp.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    item.kr.includes(searchTerm) || 
+                    item.pr.includes(searchTerm)
+                );
+            }
+
+            if (itemsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400 font-medium">
+                        🔍 검색 결과와 일치하는 단어가 없습니다.
+                    </div>
+                `;
+                return;
+            }
+
+            itemsToRender.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-150 rounded-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md hover:border-red-200 transition-all duration-200 group";
+                card.innerHTML = `
+                    <div class="flex-grow pr-3">
+                        <span class="text-red-600 font-extrabold text-base md:text-lg block tracking-wide">${item.sp}</span>
+                        <span class="text-slate-400 text-xs font-semibold block mb-1">발음: [ ${item.pr} ]</span>
+                        <span class="text-slate-800 text-sm font-bold block">${item.kr}</span>
+                    </div>
+                    <button onclick="speak('${item.sp.replace(/'/g, "\\'")}')" class="p-3 bg-slate-50 group-hover:bg-red-50 text-slate-400 group-hover:text-red-600 rounded-full transition-all duration-200 shadow-sm shrink-0" title="발음 듣기">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Situation Categorizer Tabs
+        function filterSituation(category) {
+            currentSituationTab = category;
+            document.querySelectorAll('.s-tab').forEach(b => {
+                b.className = "s-tab bg-slate-100 text-slate-700 border border-transparent text-xs md:text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all hover:bg-slate-200";
+            });
+            const activeBtn = document.getElementById('stab-' + category);
+            activeBtn.className = "s-tab bg-red-50 text-red-700 border border-red-200 text-xs md:text-sm font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all shadow-sm";
+
+            renderSituations();
+        }
+
+        // Render Situations View (150 items master list)
+        function renderSituations(searchTerm = "") {
+            const container = document.getElementById('situations-display');
+            container.innerHTML = "";
+
+            let itemsToRender = phrases[currentSituationTab] || [];
+
+            if (searchTerm) {
+                itemsToRender = [];
+                for (let cat in phrases) {
+                    itemsToRender = itemsToRender.concat(phrases[cat]);
+                }
+                itemsToRender = itemsToRender.filter(item => 
+                    item.sp.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                    item.kr.includes(searchTerm) || 
+                    item.pr.includes(searchTerm)
+                );
+            }
+
+            if (itemsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400 font-medium">
+                        🔍 검색 결과와 일치하는 회화 문장이 없습니다.
+                    </div>
+                `;
+                return;
+            }
+
+            itemsToRender.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white border-l-4 border-red-500 rounded-r-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group border-y border-r border-slate-100";
+                card.innerHTML = `
+                    <div class="flex-grow pr-3">
+                        <span class="text-red-600 font-extrabold text-base md:text-lg block mb-0.5 leading-snug">${item.sp}</span>
+                        <span class="text-slate-400 text-xs font-semibold block mb-2">발음: [ ${item.pr} ]</span>
+                        <span class="text-slate-800 text-sm font-bold block leading-relaxed">${item.kr}</span>
+                    </div>
+                    <button onclick="speak('${item.sp.replace(/'/g, "\\'")}')" class="p-3.5 bg-slate-50 group-hover:bg-red-100 text-slate-400 group-hover:text-red-700 rounded-full transition-all duration-200 shadow-sm shrink-0" title="발음 듣기">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Live search key handler
+        function handleSearch() {
+            const val = document.getElementById('searchInput').value;
+            if (activeSection === 'words') {
+                renderVocabularies(val);
+            } else if (activeSection === 'situations') {
+                renderSituations(val);
+            } else {
+                if (val.trim() !== "") {
+                    showSection('situations');
+                    document.getElementById('searchInput').value = val;
+                    renderSituations(val);
+                }
+            }
+        }
+
+        // Setup execution on load
+        window.onload = () => {
+            renderVocabularies();
+            renderSituations();
+            setTimeout(populateVoiceList, 200); // Backwards compatibility delay for TTS loading
+        };
+    </script>
+</body>
+</html>
